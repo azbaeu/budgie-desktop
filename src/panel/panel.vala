@@ -62,8 +62,6 @@ namespace Budgie {
 
 		PopoverManager? popover_manager;
 
-		Budgie.ShadowBlock shadow;
-
 		HashTable<string,HashTable<string,string>> pending = null;
 		HashTable<string,HashTable<string,string>> creating = null;
 		HashTable<string,Budgie.AppletInfo?> applets = null;
@@ -162,7 +160,6 @@ namespace Budgie {
 				this.update_positions();
 			}
 
-			this.shadow.position = position;
 			this.layout.queue_resize();
 			queue_resize();
 			queue_draw();
@@ -320,14 +317,6 @@ namespace Budgie {
 			main_layout.pack_start(layout, true, true, 0);
 			main_layout.valign = Gtk.Align.START;
 
-			/* Shadow.. */
-			shadow = new Budgie.ShadowBlock(this.position);
-			shadow.hexpand = false;
-			shadow.halign = Gtk.Align.FILL;
-			shadow.show_all();
-			main_layout.pack_start(shadow, false, false, 0);
-
-			this.settings.bind(Budgie.PANEL_KEY_SHADOW, shadow, "active", SettingsBindFlags.GET);
 			this.settings.bind(Budgie.PANEL_KEY_DOCK_MODE, this, "dock-mode", SettingsBindFlags.DEFAULT);
 
 			this.notify["dock-mode"].connect(this.update_dock_mode);
@@ -394,7 +383,7 @@ namespace Budgie {
 			unowned Budgie.AppletInfo? info = null;
 
 			for (int i = 1; i < icon_sizes.length; i++) {
-				if (icon_sizes[i] > intended_size - 5) {
+				if (icon_sizes[i] > intended_size) {
 					break;
 				}
 				size = icon_sizes[i];
@@ -969,7 +958,7 @@ namespace Budgie {
 					}
 					break;
 				case Budgie.PanelPosition.RIGHT:
-					x = (orig_scr.x + orig_scr.width) - intended_size - 5;
+					x = (orig_scr.x + orig_scr.width) - intended_size;
 					y = (orig_scr.y / 2) + (((orig_scr.y + orig_scr.height) / 2) - (alloc.height / 2));
 					if (y < orig_scr.y) {
 						y = orig_scr.y;
@@ -995,7 +984,7 @@ namespace Budgie {
 					y = orig_scr.y;
 					break;
 				case Budgie.PanelPosition.RIGHT:
-					x = (orig_scr.x + orig_scr.width) - intended_size - 5;
+					x = (orig_scr.x + orig_scr.width) - intended_size;
 					y = orig_scr.y;
 					break;
 				case Budgie.PanelPosition.BOTTOM:
@@ -1028,7 +1017,7 @@ namespace Budgie {
 			if (this.autohide != AutohidePolicy.NONE) {
 				Budgie.unset_struts(this);
 			} else {
-				Budgie.set_struts(this, position, (intended_size - 5));
+				Budgie.set_struts(this, position, (intended_size));
 			}
 		}
 
@@ -1040,15 +1029,13 @@ namespace Budgie {
 
 			int width = 0, height = 0;
 			int x = 0, y = 0;
-			int shadow_position = 0;
 
 			switch (position) {
 				case Budgie.PanelPosition.TOP:
 					x = orig_scr.x;
 					y = orig_scr.y;
 					width = orig_scr.width;
-					height = intended_size - 5;
-					shadow_position = 1;
+					height = intended_size;
 					horizontal = true;
 					break;
 				case Budgie.PanelPosition.LEFT:
@@ -1056,22 +1043,19 @@ namespace Budgie {
 					y = orig_scr.y;
 					width = intended_size;
 					height = orig_scr.height;
-					shadow_position = 1;
 					break;
 				case Budgie.PanelPosition.RIGHT:
-					x = (orig_scr.x + orig_scr.width) - intended_size - 5;
+					x = (orig_scr.x + orig_scr.width) - intended_size;
 					y = orig_scr.y;
 					width = intended_size;
 					height = orig_scr.height;
-					shadow_position = 0;
 					break;
 				case Budgie.PanelPosition.BOTTOM:
 				default:
 					x = orig_scr.x;
-					y = orig_scr.y + (orig_scr.height - intended_size - 5);
+					y = orig_scr.y + (orig_scr.height - intended_size);
 					width = orig_scr.width;
-					height = intended_size - 5;
-					shadow_position = 0;
+					height = intended_size;
 					horizontal = true;
 					break;
 			}
@@ -1092,8 +1076,6 @@ namespace Budgie {
 					}
 				}
 			}
-
-			main_layout.child_set(shadow, "position", shadow_position);
 
 			if (horizontal) {
 				start_box.halign = Gtk.Align.START;

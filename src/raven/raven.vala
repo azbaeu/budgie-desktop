@@ -182,15 +182,11 @@ namespace Budgie {
 				}
 
 				if (this._screen_edge == Gtk.PositionType.RIGHT) {
-					layout.child_set(shadow, "position", 0);
 					this.get_style_context().add_class(Budgie.position_class_name(PanelPosition.RIGHT));
 					this.get_style_context().remove_class(Budgie.position_class_name(PanelPosition.LEFT));
-					this.shadow.position = Budgie.PanelPosition.RIGHT;
 				} else {
-					layout.child_set(shadow, "position", 1);
 					this.get_style_context().add_class(Budgie.position_class_name(PanelPosition.LEFT));
 					this.get_style_context().remove_class(Budgie.position_class_name(PanelPosition.RIGHT));
-					this.shadow.position = Budgie.PanelPosition.LEFT;
 				}
 			}
 			public get {
@@ -203,7 +199,6 @@ namespace Budgie {
 		int our_x = 0;
 		int our_y = 0;
 
-		private Budgie.ShadowBlock? shadow;
 		private RavenIface? iface = null;
 		private Settings? settings = null;
 
@@ -338,10 +333,6 @@ namespace Budgie {
 				steal_focus();
 				return Gdk.EVENT_PROPAGATE;
 			});
-
-			shadow = new Budgie.ShadowBlock(PanelPosition.RIGHT);
-			layout.pack_start(shadow, false, false, 0);
-			/* For now Raven is always on the right */
 
 			var frame = new Gtk.Frame(null);
 			frame.get_style_context().add_class("raven-frame");

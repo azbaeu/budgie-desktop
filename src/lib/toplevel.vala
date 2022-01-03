@@ -27,11 +27,6 @@ namespace Budgie {
 
 	public abstract class Toplevel : Gtk.Window {
 		/**
-		* Depth of our shadow component, to enable Raven blending
-		*/
-		public int shadow_depth { public set ; public get; default = 5; }
-
-		/**
 		* Our required size (height or width dependening on orientation
 		*/
 		public int intended_size { public set ; public get; }
